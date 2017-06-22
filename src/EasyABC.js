@@ -1,16 +1,41 @@
 import React, { Component } from 'react';
 import alphabets from './alphabets.json';
-
+import classNames from 'classnames';
 
 class EasyABC extends Component {
   constructor(props){
     super(props);
     this.state= {
       alphabets:alphabets,
-      currentPosition:0
+      currentPosition:0,
+      currentTick:0
     };
+    this.next = this.next.bind(this);
+    this.previous = this.previous.bind(this);
+  }
+  next(){
+    console.log('next button clicked');
+    if(this.state.currentTick < 2){
+      this.setState({
+        currentTick: this.state.currentTick + 1
+      });
+    }else{
+      this.setState({
+        currentPosition:this.state.currentPosition + 1,
+        currentTick:0
+      });
+    }
+  }
+  previous(){
+    console.log('previous button clicked');
+    this.setState({
+      currentPosition:this.state.currentPosition - 1
+    });
   }
   render() {
+    let showImage = this.state.currentTick !== 0 ? true : false;
+    let showWord = this.state.currentTick === 2 ? true : false;
+    console.log(this.state.currentTick,showImage);
     console.log(alphabets);
     return (
       <div className = "game">
@@ -23,25 +48,25 @@ class EasyABC extends Component {
             </div>
           </div>
           <div className = "buttons">
-            <a className = "button prev">Previous</a>
+            <a onClick = {this.previous} className = "button prev">Previous</a>
 
             <a className = "button sound">Play sound again</a>
 
-            <a className = "button next">Next</a>
+            <a onClick = {this.next} className = "button next">Next</a>
           </div>
           <div className = "fields">
             <div className = "field-block">
               <div className ="left-field">
-                  <div className = "placeholder-span hide">
+                  <div className = {classNames('placeholder-span',{hide:showImage})}>
                     Click next to view Image
                   </div>
-                    <img alt="{this.state.alphabets[this.state.currentPosition].word}" className= "letter-image" src = {this.state.alphabets[this.state.currentPosition].image}/>
+                    <img alt="{this.state.alphabets[this.state.currentPosition].word}" className= {classNames('letter-image',{hide:!showImage})} src = {this.state.alphabets[this.state.currentPosition].image}/>
               </div>
               <div className = "right-field">
-                <div className = "placeholder-span hide">
+                <div className = {classNames('placeholder-span',{hide:showWord})}>
                   Click Next to view Spelling
                 </div>
-                  <div className = "word">
+                  <div className = {classNames('word',{hide:!showWord})}>
                     {this.state.alphabets[this.state.currentPosition].word.toUpperCase()}
                   </div>
 
