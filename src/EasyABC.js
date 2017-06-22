@@ -14,23 +14,38 @@ class EasyABC extends Component {
     this.previous = this.previous.bind(this);
   }
   next(){
+
     console.log('next button clicked');
-    if(this.state.currentTick < 2){
+    console.log(this.state.currentPosition,this.state.currentTick);
+    if(this.state.currentPosition === this.state.alphabets.length-1){
       this.setState({
-        currentTick: this.state.currentTick + 1
-      });
-    }else{
-      this.setState({
-        currentPosition:this.state.currentPosition + 1,
+        currentPosition:0,
         currentTick:0
       });
+    }else{
+      if(this.state.currentTick < 2){
+        this.setState({
+          currentTick: this.state.currentTick + 1
+        });
+      }else{
+        this.setState({
+          currentPosition:this.state.currentPosition + 1,
+          currentTick:0
+        });
+      }
     }
   }
   previous(){
     console.log('previous button clicked');
-    this.setState({
-      currentPosition:this.state.currentPosition - 1
-    });
+    if(this.state.currentPosition >0){
+      this.setState({
+        currentPosition:this.state.currentPosition - 1
+      });
+    }else{
+      this.setState({
+        currentPosition:this.state.alphabets.length-1
+      })
+    }
   }
   render() {
     let showImage = this.state.currentTick !== 0 ? true : false;
@@ -46,6 +61,8 @@ class EasyABC extends Component {
             <div className = "field-block">
               {this.state.alphabets[this.state.currentPosition].letter}
             </div>
+            currentPosition:{this.state.currentPosition}<br/>
+            currentTick:{this.state.currentTick}
           </div>
           <div className = "buttons">
             <a onClick = {this.previous} className = "button prev">Previous</a>
@@ -69,7 +86,6 @@ class EasyABC extends Component {
                   <div className = {classNames('word',{hide:!showWord})}>
                     {this.state.alphabets[this.state.currentPosition].word.toUpperCase()}
                   </div>
-
               </div>
             </div>
           </div>
@@ -79,5 +95,4 @@ class EasyABC extends Component {
     );
   }
 }
-
 export default EasyABC;
