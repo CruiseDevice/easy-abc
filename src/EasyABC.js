@@ -12,7 +12,32 @@ class EasyABC extends Component {
     };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
+
+  componentDidMount(){
+    let letterSound = document.querySelector(`audio[data-key="letter"]`);
+  }
+
+  componentDidUpdate(){
+    this.playSound();
+  }
+
+  playSound(){
+    let letterSound = document.querySelector(`audio[data-key="letter"]`);
+    let wordSound = document.querySelector(`audio[data-key="word"]`);
+
+
+    console.log('play sound');
+    if(this.state.currentTick === 0){
+      letterSound.currentTime = 0;
+      letterSound.play();
+    }else{
+      wordSound.currentTime = 0;
+      wordSound.play();
+    }
+  }
+
   next(){
 
     console.log('next button clicked');
@@ -34,6 +59,7 @@ class EasyABC extends Component {
         });
       }
     }
+    // this.playSound();
   }
   previous(){
     console.log('previous button clicked');
@@ -61,13 +87,16 @@ class EasyABC extends Component {
             <div className = "field-block">
               {this.state.alphabets[this.state.currentPosition].letter}
             </div>
-            currentPosition:{this.state.currentPosition}<br/>
-            currentTick:{this.state.currentTick}
+            <audio src = {this.state.alphabets[this.state.currentPosition].letterSound}
+              data-key = "letter"/>
+
           </div>
+          currentPosition:{this.state.currentPosition}<br/>
+          currentTick:{this.state.currentTick}
           <div className = "buttons">
             <a onClick = {this.previous} className = "button prev">Previous</a>
 
-            <a className = "button sound">Play sound again</a>
+            <a onClick = {this.playSound} className = "button sound">Play sound again</a>
 
             <a onClick = {this.next} className = "button next">Next</a>
           </div>
@@ -78,6 +107,8 @@ class EasyABC extends Component {
                     Click next to view Image
                   </div>
                     <img alt="{this.state.alphabets[this.state.currentPosition].word}" className= {classNames('letter-image',{hide:!showImage})} src = {this.state.alphabets[this.state.currentPosition].image}/>
+                      <audio src = {this.state.alphabets[this.state.currentPosition].wordSound}
+                        data-key = "word"/>
               </div>
               <div className = "right-field">
                 <div className = {classNames('placeholder-span',{hide:showWord})}>
