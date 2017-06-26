@@ -164,8 +164,6 @@ class EasyABC extends Component {
               data-key = "letter"/>
 
           </div>
-          currentPosition:{this.state.currentPosition}<br/>
-          currentTick:{this.state.currentTick}
           <div className = "buttons">
             <a onClick = {this.previous} className = "button prev">Previous</a>
 
