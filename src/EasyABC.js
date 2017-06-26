@@ -8,11 +8,56 @@ class EasyABC extends Component {
     this.state= {
       alphabets:alphabets,
       currentPosition:0,
-      currentTick:0
+      currentTick:0,
+      random:false,
+      sound:true
     };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.playSound = this.playSound.bind(this);
+    this.switchRandom = this.switchRandom.bind(this);
+    this.switchSound = this.switchSound.bind(this);
+    this.manualPlaySound = this.manualPlaySound.bind(this);
+  }
+
+  manualPlaySound(){
+    let letterSound = document.querySelector(`audio[data-key="letter"]`);
+    let wordSound = document.querySelector(`audio[data-key="word"]`);
+
+      console.log('play sound');
+      if(this.state.currentTick === 0){
+        letterSound.currentTime = 0;
+        letterSound.play();
+      }else{
+        wordSound.currentTime = 0;
+        wordSound.play();
+      }
+  }
+
+  switchRandom(){
+    if(this.state.random == false){
+      this.setState({
+        random:true
+      });
+    }else{
+      this.setState({
+        random:false
+      });
+    }
+    this.next();
+  }
+
+  switchSound(){
+    if(this.state.sound == true){
+      this.setState({
+        sound:false
+      });
+    }else{
+      this.setState({
+        sound:true
+      });
+    }
+
   }
 
   componentDidMount(){
@@ -27,37 +72,54 @@ class EasyABC extends Component {
     let letterSound = document.querySelector(`audio[data-key="letter"]`);
     let wordSound = document.querySelector(`audio[data-key="word"]`);
 
-
-    console.log('play sound');
-    if(this.state.currentTick === 0){
-      letterSound.currentTime = 0;
-      letterSound.play();
-    }else{
-      wordSound.currentTime = 0;
-      wordSound.play();
+    if(this.state.sound){
+      console.log('play sound');
+      if(this.state.currentTick === 0){
+        letterSound.currentTime = 0;
+        letterSound.play();
+      }else{
+        wordSound.currentTime = 0;
+        wordSound.play();
+      }
     }
   }
 
+  randomNumber(min,max){
+    return Math.floor(Math.random() * (max - min) + min);
+  }
   next(){
-
-    console.log('next button clicked');
-    console.log(this.state.currentPosition,this.state.currentTick);
-    if(this.state.currentPosition === this.state.alphabets.length-1){
-      this.setState({
-        currentPosition:0,
-        currentTick:0
-      });
-    }else{
+    if(this.state.random){
       if(this.state.currentTick < 2){
         this.setState({
-          currentTick: this.state.currentTick + 1
+          currentTick:this.state.currentTick + 1
         });
       }else{
         this.setState({
-          currentPosition:this.state.currentPosition + 1,
+          currentPosition:this.randomNumber(0,25),
+          currentTick:0
+        })
+      }
+    }else{
+      console.log('next button clicked');
+      console.log(this.state.currentPosition,this.state.currentTick);
+      if(this.state.currentPosition === this.state.alphabets.length-1){
+        this.setState({
+          currentPosition:0,
           currentTick:0
         });
+      }else{
+        if(this.state.currentTick < 2){
+          this.setState({
+            currentTick: this.state.currentTick + 1
+          });
+        }else{
+          this.setState({
+            currentPosition:this.state.currentPosition + 1,
+            currentTick:0
+          });
+        }
       }
+
     }
     // this.playSound();
   }
@@ -76,12 +138,23 @@ class EasyABC extends Component {
   render() {
     let showImage = this.state.currentTick !== 0 ? true : false;
     let showWord = this.state.currentTick === 2 ? true : false;
+
     console.log(this.state.currentTick,showImage);
     console.log(alphabets);
+
     return (
       <div className = "game">
-        <h3>Random Letters</h3>
-        <a href = "#" className = ""></a>
+        <span className="random-label">Random Letters: </span>
+        <label className = "switch">
+          <input type = "checkbox" onClick = {this.switchRandom} defaultValue="false" checked={this.state.random}/>
+          <div className = "slider round"></div>
+        </label>
+        <span className="random-label">Sound: </span>
+        <label className = "switch">
+          <input type = "checkbox" onClick = {this.switchSound} defaultValue="false" checked={this.state.sound}/>
+          <div className = "slider round"></div>
+        </label>
+
         <div className ="option">
           <div className = "fields">
             <div className = "field-block">
@@ -96,7 +169,7 @@ class EasyABC extends Component {
           <div className = "buttons">
             <a onClick = {this.previous} className = "button prev">Previous</a>
 
-            <a onClick = {this.playSound} className = "button sound">Play sound again</a>
+            <a onClick = {this.manualPlaySound} className = "button sound">Play sound again</a>
 
             <a onClick = {this.next} className = "button next">Next</a>
           </div>
